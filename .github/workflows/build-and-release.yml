@@ -132,11 +132,19 @@ jobs:
             echo "✅ Release APK built successfully"
             ls -lh app/build/outputs/apk/release/app-release.apk
             APK_SIZE=$(du -h app/build/outputs/apk/release/app-release.apk | cut -f1)
+            echo "APK_PATH=app/build/outputs/apk/release/app-release.apk" >> $GITHUB_ENV
+            echo "APK_SIZE=$APK_SIZE" >> $GITHUB_ENV
+          elif [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            echo "✅ Unsigned Release APK built successfully"
+            ls -lh app/build/outputs/apk/release/app-release-unsigned.apk
+            APK_SIZE=$(du -h app/build/outputs/apk/release/app-release-unsigned.apk | cut -f1)
+            echo "APK_PATH=app/build/outputs/apk/release/app-release-unsigned.apk" >> $GITHUB_ENV
             echo "APK_SIZE=$APK_SIZE" >> $GITHUB_ENV
           elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
             echo "✅ Debug APK built successfully"
             ls -lh app/build/outputs/apk/debug/app-debug.apk
             APK_SIZE=$(du -h app/build/outputs/apk/debug/app-debug.apk | cut -f1)
+            echo "APK_PATH=app/build/outputs/apk/debug/app-debug.apk" >> $GITHUB_ENV
             echo "APK_SIZE=$APK_SIZE" >> $GITHUB_ENV
           else
             echo "❌ No build artifacts found"
