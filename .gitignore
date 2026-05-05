@@ -1,0 +1,9 @@
+*.jks
+*.keystore
+keystore_base64.txt
+local.properties
+set_secrets.py
+.gradle/
+build/
+.idea/
+*.iml

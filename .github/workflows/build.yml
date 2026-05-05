@@ -1,0 +1,65 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/diceroller-release.jks
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_FILE: app/diceroller-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/app-release.apk
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: DiceRoller v1.0.0
+          body: |
+            ## 🎲 DiceRoller v1.0.0
+
+            ### 功能特性
+            - 🎯 真实物理引擎模拟骰子投掷
+            - ⚡ 点击越快力度越大
+            - 🔷 支持 D4/D6/D8/D10/D12/D20/D100 预设
+            - 🎨 自定义骰子颜色
+            - 🔊 程序化生成音效
+            - 📊 可选显示结果总和
+            - 🎲 支持1-10个骰子同时投掷
+
+            ### 安装说明
+            1. 下载下方 APK 文件
+            2. 在手机上允许安装未知来源应用
+            3. 安装并享受！
+          files: app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
