@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#1B3A15">
+    <FrameLayout android:id="@+id/diceContainer" android:layout_width="match_parent" android:layout_height="match_parent" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:gravity="center" android:orientation="vertical" android:padding="16dp">
+        <TextView android:id="@+id/resultText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="#CC000000" android:paddingHorizontal="24dp" android:paddingVertical="12dp" android:textColor="#FFFFFF" android:textSize="28sp" android:textStyle="bold" android:visibility="gone" android:elevation="4dp" />
+        <TextView android:id="@+id/sumText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="#CC000000" android:paddingHorizontal="20dp" android:paddingVertical="8dp" android:textColor="#FFD700" android:textSize="20sp" android:textStyle="bold" android:visibility="gone" android:elevation="4dp" />
+    </LinearLayout>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:alpha="0.3" android:text="@string/tap_to_roll" android:textColor="#FFFFFF" android:textSize="18sp" android:id="@+id/hintText" />
+</FrameLayout>
