@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">骰子投掷器</string>
+    <string name="settings_title">设置</string>
+    <string name="settings">设置</string>
+    <string name="clear">清除</string>
+    <string name="tap_to_roll">点击屏幕投骰子\n点击越快力度越大！</string>
+    <string name="sum_format">总和: %d</string>
+    <string name="dice_preset_label">骰子预设</string>
+    <string name="dice_count_label">骰子数量</string>
+    <string name="dice_color_label">骰子颜色</string>
+    <string name="show_sum_label">显示结果总和</string>
+    <string name="sound_enabled_label">启用音效</string>
+</resources>
