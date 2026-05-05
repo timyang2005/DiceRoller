@@ -97,22 +97,6 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "📦 Build version: $VERSION"
 
-      - name: Decode Keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 || github.event.inputs.keystore_base64 }}
-        run: |
-          if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 --decode > app/diceroller-release.jks 2>/dev/null || echo "⚠️ Failed to decode keystore"
-            if [ -f "app/diceroller-release.jks" ]; then
-              echo "✅ Keystore decoded successfully"
-            else
-              echo "⚠️ Keystore file not created, will use debug signing"
-            fi
-          else
-            echo "ℹ️ KEYSTORE_BASE64 not provided, will use debug signing"
-          fi
-        continue-on-error: true
-
       - name: Build Debug APK
         if: github.event_name == 'pull_request'
         run: |
@@ -121,19 +105,9 @@ jobs:
 
       - name: Build Release APK
         if: github.event_name != 'pull_request'
-        env:
-          KEYSTORE_FILE: app/diceroller-release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || github.event.inputs.keystore_password }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS || github.event.inputs.key_alias }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || github.event.inputs.key_password }}
         run: |
-          if [ -f "app/diceroller-release.jks" ]; then
-            echo "🔐 Building with release signing..."
-            ./gradlew assembleRelease --stacktrace
-          else
-            echo "🔓 Building release APK with debug signing..."
-            ./gradlew assembleRelease --stacktrace
-          fi
+          echo "🔐 Building with release signing..."
+          ./gradlew assembleRelease --stacktrace
         continue-on-error: false
 
       - name: Verify Build Outputs

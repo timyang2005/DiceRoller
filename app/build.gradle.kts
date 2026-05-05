@@ -15,6 +15,15 @@ android {
         versionName = "1.1.0"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("diceroller-release.jks")
+            storePassword = "Dic3Roller2024!"
+            keyAlias = "diceroller"
+            keyPassword = "Dic3Roller2024!"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -22,26 +31,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            
-            val keystoreFile = System.getenv("KEYSTORE_FILE")
-            if (!keystoreFile.isNullOrEmpty() && file(keystoreFile).exists()) {
-                signingConfig = signingConfigs.create("release") {
-                    storeFile = file(keystoreFile)
-                    storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-                    keyAlias = System.getenv("KEY_ALIAS") ?: ""
-                    keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-                }
-            } else if (project.hasProperty("RELEASE_STORE_FILE")) {
-                val storeFilePath = project.property("RELEASE_STORE_FILE") as String
-                if (file(storeFilePath).exists()) {
-                    signingConfig = signingConfigs.create("release") {
-                        storeFile = file(storeFilePath)
-                        storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as? String ?: ""
-                        keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as? String ?: ""
-                        keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as? String ?: ""
-                    }
-                }
-            }
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
         }
