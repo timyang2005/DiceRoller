@@ -17,7 +17,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("diceroller-release.jks")
+            storeFile = file("../diceroller-release.jks")
             storePassword = "Dic3Roller2024!"
             keyAlias = "diceroller"
             keyPassword = "Dic3Roller2024!"
