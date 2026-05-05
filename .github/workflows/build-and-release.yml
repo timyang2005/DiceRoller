@@ -87,11 +87,16 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 --decode > app/diceroller-release.jks
-            echo "✅ Keystore decoded successfully"
+            echo "$KEYSTORE_BASE64" | base64 --decode > app/diceroller-release.jks 2>/dev/null || echo "⚠️ Failed to decode keystore"
+            if [ -f "app/diceroller-release.jks" ]; then
+              echo "✅ Keystore decoded successfully"
+            else
+              echo "⚠️ Keystore file not created, will use debug signing"
+            fi
           else
             echo "⚠️ KEYSTORE_BASE64 not found, will use debug signing"
           fi
+        continue-on-error: true
 
       - name: Build Debug APK
         if: github.event_name == 'pull_request'
