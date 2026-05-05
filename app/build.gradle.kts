@@ -20,15 +20,15 @@ android {
             val keystoreFile = System.getenv("KEYSTORE_FILE")
             if (!keystoreFile.isNullOrEmpty()) {
                 storeFile = file(keystoreFile)
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+                keyAlias = System.getenv("KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
             } else if (project.hasProperty("RELEASE_STORE_FILE")) {
                 storeFile = file(project.property("RELEASE_STORE_FILE") as String)
+                storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as? String ?: ""
+                keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as? String ?: ""
+                keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as? String ?: ""
             }
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-                ?: (project.findProperty("RELEASE_STORE_PASSWORD") as? String ?: "")
-            keyAlias = System.getenv("KEY_ALIAS")
-                ?: (project.findProperty("RELEASE_KEY_ALIAS") as? String ?: "")
-            keyPassword = System.getenv("KEY_PASSWORD")
-                ?: (project.findProperty("RELEASE_KEY_PASSWORD") as? String ?: "")
         }
     }
 
@@ -42,7 +42,6 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            signingConfig = signingConfigs.getByName("release")
         }
     }
 
