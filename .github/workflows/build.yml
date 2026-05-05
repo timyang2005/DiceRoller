@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Release (Legacy)
 
 on:
   push:
@@ -26,7 +26,12 @@ jobs:
 
       - name: Decode Keystore
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > app/diceroller-release.jks
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > app/diceroller-release.jks
+            echo "Keystore decoded successfully"
+          else
+            echo "No keystore provided, will use debug signing"
+          fi
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
@@ -36,7 +41,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
