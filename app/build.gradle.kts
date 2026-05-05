@@ -15,23 +15,6 @@ android {
         versionName = "1.1.0"
     }
 
-    signingConfigs {
-        create("release") {
-            val keystoreFile = System.getenv("KEYSTORE_FILE")
-            if (!keystoreFile.isNullOrEmpty()) {
-                storeFile = file(keystoreFile)
-                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-                keyAlias = System.getenv("KEY_ALIAS") ?: ""
-                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-            } else if (project.hasProperty("RELEASE_STORE_FILE")) {
-                storeFile = file(project.property("RELEASE_STORE_FILE") as String)
-                storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as? String ?: ""
-                keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as? String ?: ""
-                keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as? String ?: ""
-            }
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -39,7 +22,26 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            
+            val keystoreFile = System.getenv("KEYSTORE_FILE")
+            if (!keystoreFile.isNullOrEmpty() && file(keystoreFile).exists()) {
+                signingConfig = signingConfigs.create("release") {
+                    storeFile = file(keystoreFile)
+                    storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+                    keyAlias = System.getenv("KEY_ALIAS") ?: ""
+                    keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+                }
+            } else if (project.hasProperty("RELEASE_STORE_FILE")) {
+                val storeFilePath = project.property("RELEASE_STORE_FILE") as String
+                if (file(storeFilePath).exists()) {
+                    signingConfig = signingConfigs.create("release") {
+                        storeFile = file(storeFilePath)
+                        storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as? String ?: ""
+                        keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as? String ?: ""
+                        keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as? String ?: ""
+                    }
+                }
+            }
         }
         debug {
         }
